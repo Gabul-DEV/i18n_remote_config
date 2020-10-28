@@ -14,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("title".i18n(["BH", "SP"])),
+        title: Text("title".i18n(params: ["BH", "SP"])),
       ),
       body: Column(
         children: <Widget>[],

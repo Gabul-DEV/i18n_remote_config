@@ -47,6 +47,8 @@ Configure your __MaterialApp__. Add LocalizationsDelegates and supportedLocales 
 
 Add __I18nLocalizations__ your __AppModule__
 
+If you use packages, add I18nLocalizations(["name_package"])
+
 ![](https://image.prntscr.com/image/dri37D4-SdKydAithBXpdg.png)
 
 ### STEP 7 
@@ -75,5 +77,5 @@ If you can pass params your string, use:
 - EXAMPLE DART
 
 ```dart
-"title".i18n("FLUTTER","DART")
+"title".i18n(params: "FLUTTER","DART")
 ```

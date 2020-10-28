@@ -6,57 +6,82 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 class I18nLocalizations {
   var _locales = <String, dynamic>{};
+  final List<String> packages;
+
+  I18nLocalizations([this.packages]) {
+    this.packages.add("app");
+  }
 
   Locale currentLocale() =>
       Localizations.localeOf(Modular.navigatorKey.currentContext);
 
-  Future<String> loadStringByPath(String path) =>
-      rootBundle.loadString("lang/$path");
+  Future<String> loadStringByPath(String path) => rootBundle.loadString(path);
 
-  Future<void> load() async {
-    final locale = currentLocale();
-    final path = "$locale.json";
+  Future<void> _loadLocalJson(Locale locale, [String package]) async {
+    final path = package != "app"
+        ? "packages/$package/lang/$locale.json"
+        : "lang/$locale.json";
     try {
       final json = await loadStringByPath(path);
-      _locales = Map.from(jsonDecode(json));
+      final key = package != null ? package : "app";
+      _locales.addAll({key: Map.from(jsonDecode(json))});
     } catch (e) {
       final error =
           "ERROR i18n LOAD $path!\n1- Verify if you create folder lang and add json.\n2- Verify if you add in pubspec.yaml assets: ... - lang/";
       print(error);
       throw ErrorHint(error);
     }
+  }
+
+  Future<void> load() async {
+    final locale = currentLocale();
+
+    for (var item in packages) {
+      await _loadLocalJson(locale, item);
+    }
+
     try {
-      await startRemoteConfig(locale);
+      for (var item in packages) {
+        try {
+          await startRemoteConfig(locale, item);
+        } catch (e) {}
+      }
     } catch (e) {
       final error =
           "ERROR i18n REMOTE CONFIG \n1- Verify add GoogleService-Info.plist for iOS and GoogleService.json for android";
       print(error);
-      throw ErrorHint(error);
     }
+
     return;
   }
 
-  Future<void> startRemoteConfig(Locale locale) async {
+  Future<void> startRemoteConfig(Locale locale,
+      [String package = "app"]) async {
     try {
       final instance = await RemoteConfig.instance;
       await instance.setDefaults(_locales);
       await instance.fetch();
       await instance.activateFetched();
-      final value = instance.getString(locale.toString());
-      _locales = jsonDecode(value);
+      print("${package}_$locale");
+      final value = instance.getString("${package}_$locale");
+      if (value.isNotEmpty) _locales.addAll({package: jsonDecode(value)});
       return;
     } catch (e) {
       final error =
           "ERROR i18n GET VALUE REMOTE CONFIG \n1- Verify if is correct locale create in REMOTE CONFIG";
+      throw ErrorHint(error);
     }
   }
 
   String getValue(String key) {
-    final module = Modular.to.modulePath;
-    if (module != null) {
-      return _locales[module][key];
-    } else {
-      return _locales[key];
+    String stringLocale = "NOT FOUND [$key]";
+    for (var item in packages) {
+      if (_locales[item].containsKey(key)) {
+        stringLocale = _locales[item][key];
+        break;
+      }
     }
+
+    return stringLocale;
   }
 }
