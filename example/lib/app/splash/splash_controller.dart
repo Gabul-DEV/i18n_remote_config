@@ -11,12 +11,12 @@ class SplashController = _SplashBase with _$SplashController;
 
 abstract class _SplashBase extends Disposable with Store {
   final I18nLocalizations i18localizations;
-  ReactionDisposer _disposer;
+  late ReactionDisposer _disposer;
 
   @observable
   SplashState state = SplashState.empty;
 
-  _SplashBase({@required this.i18localizations}) {
+  _SplashBase({required this.i18localizations}) {
     loadLocalizations();
     _disposer = when((_) => state == SplashState.success, () {
       Modular.to.pushReplacementNamed("/home");

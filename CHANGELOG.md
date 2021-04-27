@@ -1,3 +1,5 @@
+## [0.0.4-nullsafety] - TODO: Migration Nullsafety.
+
 ## [0.0.3+1] - TODO: Support release firebase.
 
 - TODO: ADD support firebase_remote_config 0.6.0

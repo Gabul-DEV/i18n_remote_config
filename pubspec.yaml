@@ -1,16 +1,16 @@
 name: i18n_remote_config
 description: Integration i18n with Remote Config. The package help you implements remote config. The objective is create redundance your application, if remote config failure the package return your local json.
-version: 0.0.3+1
+version: 0.0.4-nullsafety
 repository: https://github.com/gabuldev/i18n_remote_config
 homepage: https://gabul.dev
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
   flutter: ">=1.17.0 <2.0.0"
 
 dependencies:
   mockito: ^4.1.3
-  firebase_remote_config: ">=0.3.0+3 <=0.6.0"
+  firebase_remote_config: ^0.10.0-dev.2
   flutter_modular: ^2.0.1
   flutter:
     sdk: flutter

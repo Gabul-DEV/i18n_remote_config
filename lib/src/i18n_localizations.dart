@@ -6,18 +6,20 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 class I18nLocalizations {
   var _locales = <String, dynamic>{};
-  final List<String> packages;
+  final List<String>? packages;
 
   I18nLocalizations([this.packages]) {
-    this.packages.add("app");
+    if (packages != null) {
+      this.packages!.add("app");
+    }
   }
 
   Locale currentLocale() =>
-      Localizations.localeOf(Modular.navigatorKey.currentContext);
+      Localizations.localeOf(Modular.navigatorKey.currentContext!);
 
   Future<String> loadStringByPath(String path) => rootBundle.loadString(path);
 
-  Future<void> _loadLocalJson(Locale locale, [String package]) async {
+  Future<void> _loadLocalJson(Locale locale, [String? package]) async {
     final path = package != "app"
         ? "packages/$package/lang/$locale.json"
         : "lang/$locale.json";
@@ -36,12 +38,12 @@ class I18nLocalizations {
   Future<void> load() async {
     final locale = currentLocale();
 
-    for (var item in packages) {
+    for (var item in packages!) {
       await _loadLocalJson(locale, item);
     }
 
     try {
-      for (var item in packages) {
+      for (var item in packages!) {
         try {
           await startRemoteConfig(locale, item);
         } catch (e) {}
@@ -61,7 +63,7 @@ class I18nLocalizations {
       final instance = await RemoteConfig.instance;
       await instance.setDefaults(_locales);
       await instance.fetch();
-      await instance.activateFetched();
+      await instance.activate();
       print("${package}_$locale");
       final value = instance.getString("${package}_$locale");
       if (value.isNotEmpty) _locales.addAll({package: jsonDecode(value)});
@@ -75,7 +77,7 @@ class I18nLocalizations {
 
   String getValue(String key) {
     String stringLocale = "NOT FOUND [$key]";
-    for (var item in packages) {
+    for (var item in packages!) {
       if (_locales[item].containsKey(key)) {
         stringLocale = _locales[item][key];
         break;

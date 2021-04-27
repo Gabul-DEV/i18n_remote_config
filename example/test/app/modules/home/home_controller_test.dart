@@ -6,7 +6,7 @@ import 'package:example/app/modules/home/home_module.dart';
 
 void main() {
   initModule(HomeModule());
-  HomeController home;
+  late HomeController home;
 
   setUp(() {
     home = HomeModule.to.get<HomeController>();
