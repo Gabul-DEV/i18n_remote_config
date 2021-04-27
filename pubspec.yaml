@@ -1,6 +1,6 @@
 name: i18n_remote_config
 description: Integration i18n with Remote Config. The package help you implements remote config. The objective is create redundance your application, if remote config failure the package return your local json.
-version: 0.0.4-nullsafety
+version: 0.0.4-nullsafety+1
 repository: https://github.com/gabuldev/i18n_remote_config
 homepage: https://gabul.dev
 
