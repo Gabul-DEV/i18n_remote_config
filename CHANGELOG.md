@@ -1,3 +1,6 @@
+## [0.0.4-nullsafety+1] - TODO: Migration Nullsafety.
+
+- Update dependencies
 ## [0.0.4-nullsafety] - TODO: Migration Nullsafety.
 
 ## [0.0.3+1] - TODO: Support release firebase.
