@@ -1,10 +1,6 @@
 {
-    "/splash" : {
-    "success" : "Carregado com sucesso",
-    "failure" : "Não foi possível realizar a transação"
-    },
-    "/home": {
-        "title" : "CASA $0 $1",
-        "button" : "BUTAO"
-    }
+    "success": "Carregado com sucesso",
+    "failure": "Não foi possível realizar a transação",
+    "title": "CASA $0 $1",
+    "button": "BUTAO"
 }

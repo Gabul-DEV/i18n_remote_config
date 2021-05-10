@@ -1,25 +1,31 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 
 class I18nLocalizations {
-  var _locales = <String, dynamic>{};
-  final List<String>? packages;
+  static I18nLocalizations? _instance;
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
-  I18nLocalizations([this.packages]) {
-    if (packages != null) {
-      this.packages!.add("app");
-    }
+  static void startWithPackages(List<String> packages) {
+    instance.packages.addAll(packages);
   }
 
-  Locale currentLocale() =>
-      Localizations.localeOf(Modular.navigatorKey.currentContext!);
+  static I18nLocalizations get instance {
+    if (_instance == null) {
+      _instance = I18nLocalizations();
+    }
+    return _instance!;
+  }
+
+  var _locales = <String, dynamic>{};
+  final List<String> packages = <String>["app"];
 
   Future<String> loadStringByPath(String path) => rootBundle.loadString(path);
 
-  Future<void> _loadLocalJson(Locale locale, [String? package]) async {
+  Future<void> _loadLocalJson(String locale, [String? package]) async {
     final path = package != "app"
         ? "packages/$package/lang/$locale.json"
         : "lang/$locale.json";
@@ -27,6 +33,7 @@ class I18nLocalizations {
       final json = await loadStringByPath(path);
       final key = package != null ? package : "app";
       _locales.addAll({key: Map.from(jsonDecode(json))});
+      print(_locales);
     } catch (e) {
       final error =
           "ERROR i18n LOAD $path!\n1- Verify if you create folder lang and add json.\n2- Verify if you add in pubspec.yaml assets: ... - lang/";
@@ -36,14 +43,14 @@ class I18nLocalizations {
   }
 
   Future<void> load() async {
-    final locale = currentLocale();
+    final locale = Platform.localeName;
 
-    for (var item in packages!) {
+    for (var item in packages) {
       await _loadLocalJson(locale, item);
     }
 
     try {
-      for (var item in packages!) {
+      for (var item in packages) {
         try {
           await startRemoteConfig(locale, item);
         } catch (e) {}
@@ -57,10 +64,10 @@ class I18nLocalizations {
     return;
   }
 
-  Future<void> startRemoteConfig(Locale locale,
+  Future<void> startRemoteConfig(String locale,
       [String package = "app"]) async {
     try {
-      final instance = await RemoteConfig.instance;
+      final instance = RemoteConfig.instance;
       await instance.setDefaults(_locales);
       await instance.fetch();
       await instance.activate();
@@ -77,7 +84,7 @@ class I18nLocalizations {
 
   String getValue(String key) {
     String stringLocale = "NOT FOUND [$key]";
-    for (var item in packages!) {
+    for (var item in packages) {
       if (_locales[item].containsKey(key)) {
         stringLocale = _locales[item][key];
         break;

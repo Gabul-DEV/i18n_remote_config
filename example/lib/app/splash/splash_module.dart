@@ -2,19 +2,17 @@ import 'splash_controller.dart';
 import 'splash_page.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-class SplashModule extends ChildModule {
+class SplashModule extends Module {
   @override
   List<Bind> get binds => [
-        Bind((i) => SplashController(i18localizations: i())),
+        Bind((i) => SplashController()),
       ];
 
   @override
-  List<ModularRouter> get routers => [
-        ModularRouter(
+  List<ModularRoute> get routes => [
+        ChildRoute(
           "/",
           child: (context, args) => SplashPage(),
         )
       ];
-
-  static Inject get to => Inject<SplashModule>.of();
 }

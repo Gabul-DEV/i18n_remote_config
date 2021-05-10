@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:i18n_remote_config/i18n_remote_config.dart';
 
@@ -10,13 +9,12 @@ part 'splash_controller.g.dart';
 class SplashController = _SplashBase with _$SplashController;
 
 abstract class _SplashBase extends Disposable with Store {
-  final I18nLocalizations i18localizations;
   late ReactionDisposer _disposer;
 
   @observable
   SplashState state = SplashState.empty;
 
-  _SplashBase({required this.i18localizations}) {
+  _SplashBase() {
     loadLocalizations();
     _disposer = when((_) => state == SplashState.success, () {
       Modular.to.pushReplacementNamed("/home");
@@ -27,9 +25,10 @@ abstract class _SplashBase extends Disposable with Store {
   Future<void> loadLocalizations() async {
     state = SplashState.loading;
     try {
-      await i18localizations.load();
+      await I18nLocalizations.instance.load();
       state = SplashState.success;
     } catch (e) {
+      print(e);
       state = SplashState.failure;
     }
   }
