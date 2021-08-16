@@ -1,3 +1,8 @@
+## [0.0.4+1] 
+
+### fixed
+- Load Strings file in integration test
+
 ## [0.0.3+1] - TODO: Support release firebase.
 
 - TODO: ADD support firebase_remote_config 0.6.0
