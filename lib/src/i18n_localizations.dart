@@ -15,7 +15,12 @@ class I18nLocalizations {
   Locale currentLocale() =>
       Localizations.localeOf(Modular.navigatorKey.currentContext);
 
-  Future<String> loadStringByPath(String path) => rootBundle.loadString(path);
+  Future<String> loadStringByPath(String path) async {
+    ByteData data = await rootBundle.load(path);
+    final buffer = data.buffer;
+    var list = buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    return utf8.decode(list);
+  }
 
   Future<void> _loadLocalJson(Locale locale, [String package]) async {
     final path = package != "app"
